@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/QtGuiPE_Resource">
+        <file>Resources/folder.bmp</file>
+        <file>Resources/resource-icon.png</file>
+    </qresource>
+</RCC>
