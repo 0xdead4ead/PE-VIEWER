@@ -16,12 +16,12 @@ int main(int argc, char* argv[])
 	QApplication a(argc, argv);
 	//qInstallMessageHandler(message_to_file);
 	QtGuiPE w;
-	QString pathfile = QFileDialog::getOpenFileName(nullptr,"OPEN FILE", "", "COFF FORMAT OBJECTS (*.exe *.dll *.ocx *.cpl)");
-	
+	QString pathfile = QFileDialog::getOpenFileName(nullptr,"OPEN FILE", "", "Executable COFF FORMAT OBJECTS (*.exe *.dll *.ocx *.cpl *.scr *.sys)");
+
 	if (!pathfile.isEmpty()) {
 		if (w.ReadPE(pathfile)) {
 			w.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
-			w.setWindowTitle("QtGuiPE " + pathfile);
+			w.setWindowTitle("GuiPEBuilder " + pathfile);
 
 			w.show();
 			return a.exec();

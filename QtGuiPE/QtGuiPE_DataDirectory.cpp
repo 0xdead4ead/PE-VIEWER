@@ -14,7 +14,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 	case IMAGE_DIRECTORY_ENTRY_EXPORT: {
 		if (file.PE32) {
 			if (file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress) {
-				export_table.setWindowTitle(QString("QtGuiPE ") + QString("EXPORT TABLE"));
+				export_table.setWindowTitle(QString("GuiPEBuilder ") + QString("EXPORT TABLE"));
 				export_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				export_table.show();
 			}
@@ -28,7 +28,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 		}
 		else {
 			if (file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress) {
-				export_table.setWindowTitle(QString("QtGuiPE ") + QString("EXPORT TABLE"));
+				export_table.setWindowTitle(QString("GuiPEBuilder ") + QString("EXPORT TABLE"));
 				export_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				export_table.show();
 			}
@@ -45,7 +45,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 	case IMAGE_DIRECTORY_ENTRY_IMPORT: {
 		if (file.PE32) {
 			if (file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) {
-				import_table.setWindowTitle(QString("QtGuiPE ") + QString("IMPORT TABLE"));
+				import_table.setWindowTitle(QString("GuiPEBuilder ") + QString("IMPORT TABLE"));
 				import_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				import_table.show();
 			}
@@ -59,7 +59,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 		}
 		else {
 			if (file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress) {
-				import_table.setWindowTitle(QString("QtGuiPE ") + QString("IMPORT TABLE"));
+				import_table.setWindowTitle(QString("GuiPEBuilder ") + QString("IMPORT TABLE"));
 				import_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				import_table.show();
 			}
@@ -76,7 +76,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 	case IMAGE_DIRECTORY_ENTRY_RESOURCE: {
 		if (file.PE32) {
 			if (file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress) {
-				resource.setWindowTitle(QString("QtGuiPE ") + QString("RESOURCE TABLE"));
+				resource.setWindowTitle(QString("GuiPEBuilder ") + QString("RESOURCE TABLE"));
 				resource.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				resource.show();
 			}
@@ -90,7 +90,7 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 		}
 		else {
 			if (file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress) {
-				resource.setWindowTitle(QString("QtGuiPE ") + QString("RESOURCE TABLE"));
+				resource.setWindowTitle(QString("GuiPEBuilder ") + QString("RESOURCE TABLE"));
 				resource.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 				resource.show();
 			}
@@ -103,6 +103,65 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 			}
 		}
 		break;
+	}
+	case IMAGE_DIRECTORY_ENTRY_EXCEPTION: {
+		if (file.PE32) {
+			if (file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress) {
+				except_table.setWindowTitle(QString("GuiPEBuilder ") + QString("EXCEPTION TABLE"));
+				except_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+				except_table.show();
+				if ((file.file_header->Machine != IMAGE_FILE_MACHINE_IA64) 
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_AMD64)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_R3000)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_ARM)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_POWERPC)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_POWERPCFP)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_SH3)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_SH4)) {
+					QMessageBox MsgBox;
+					MsgBox.setText(QString::fromWCharArray(L"Exception table exists only for IA64, x86-64, MIPS R3000, ARM, PowerPC processors, SH3 and SH4.\nThe following data may be incorrect."));
+					MsgBox.setIcon(QMessageBox::Warning);
+					MsgBox.setStandardButtons(QMessageBox::Ok);
+					MsgBox.exec();
+				}
+			}
+			else {
+				QMessageBox MsgBox;
+				MsgBox.setText(QString::fromWCharArray(L"Exception table not present"));
+				MsgBox.setIcon(QMessageBox::Warning);
+				MsgBox.setStandardButtons(QMessageBox::Ok);
+				MsgBox.exec();
+			}
+		}
+		else {
+			if (file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress) {
+				except_table.setWindowTitle(QString("GuiPEBuilder ") + QString("EXCEPTION TABLE"));
+				except_table.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+				except_table.show();
+				if ((file.file_header->Machine != IMAGE_FILE_MACHINE_IA64)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_AMD64)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_R3000)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_ARM)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_POWERPC)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_POWERPCFP)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_SH3)
+					&& (file.file_header->Machine != IMAGE_FILE_MACHINE_SH4)) {
+					QMessageBox MsgBox;
+					MsgBox.setText(QString::fromWCharArray(L"Exception table exists only for IA64, x86-64, MIPS R3000, ARM, PowerPC processors, SH3 and SH4.\nThe following data may be incorrect."));
+					MsgBox.setIcon(QMessageBox::Warning);
+					MsgBox.setStandardButtons(QMessageBox::Ok);
+					MsgBox.exec();
+				}
+			}
+			else {
+				QMessageBox MsgBox;
+				MsgBox.setText(QString::fromWCharArray(L"Exception table not present"));
+				MsgBox.setIcon(QMessageBox::Warning);
+				MsgBox.setStandardButtons(QMessageBox::Ok);
+				MsgBox.exec();
+			}
+		}
+		break; 
 	}
 	}
 }
@@ -210,10 +269,12 @@ void QtGuiPE_DataDirectory::fill_fields() {
 	export_table.fill_fields();
 	import_table.fill_fields();
 	resource.fill_fields();
+	except_table.fill_fields();
 }
 
 void QtGuiPE_DataDirectory::clear_fields_in_all_tables() {
 	export_table.clear_fields_table();
 	import_table.clear_fields_table();
 	resource.clear_fields();
+	except_table.clear_fields_table();
 }

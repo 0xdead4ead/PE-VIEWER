@@ -41,10 +41,8 @@ typedef struct {
 
 typedef struct {
 	LPCTSTR lpszName;
-	//wstring szLanguage;
 	wstring szResName;
 	DWORD RVAData;
-	//DWORD ResourceName;
 	DWORD ResourceSize;
 	WORD wIDLanguage;
 } PE_FILE_RESOURCE_NAME;
@@ -53,8 +51,31 @@ typedef struct {
 	LPTSTR lpszType;
 	wstring szResType;
 	vector<PE_FILE_RESOURCE_NAME> names;
-	//WORD ResourceType;
 } PE_FILE_RESOURCE_TYPE;
+
+typedef struct {
+	DWORD BeginAddress;
+	DWORD EndAddress;
+	DWORD ExceptionHandler;
+	DWORD HandlerData;
+	DWORD PrologEndAdress;
+} __declspec(align(4)) PE_FILE_EXCEPTION_ENTRY_MIPS32;   //for MIPS32
+
+typedef struct {
+	DWORD BeginAddress;
+	DWORD EndAddress;
+	DWORD UnwindInformation;
+} __declspec(align(4)) PE_FILE_EXCEPTION_ENTRY_X64;    //for x86-64, Itanium
+
+typedef struct {
+	union {
+		DWORD PrologLength : 8;
+		DWORD FunctionLength : 22;
+		DWORD bit32Flag : 1;
+		DWORD ExceptionFlag : 1;
+		DWORD BeginAddress;
+	};
+} __declspec(align(4)) PE_FILE_EXCEPTION_ENTRY_OTHER;   //for PPC,ARM,SH3,SH4
 
 BOOL read_char_cs_forcheck32bitPE(LONG e_lfanew, LPWORD CHAR_CS, HANDLE hFile);
 BOOL read_dos_header(PIMAGE_DOS_HEADER dos, HANDLE hFile);
@@ -65,6 +86,9 @@ BOOL read_optional_header64(LONG e_lfanew, PIMAGE_OPTIONAL_HEADER64 op64, HANDLE
 BOOL read_section_headers(LONG Distance, vector<IMAGE_SECTION_HEADER>* sections,  WORD NumberOfSections, HANDLE hFile);
 BOOL read_export_table(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections, DWORD RVAoffset, PE_FILE_EXPORT_TABLE* expt, HANDLE hFile);
 BOOL read_import_table(BOOL pe32,DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections, DWORD RVAoffset, PE_FILE_IMPORT_TABLE* impt, HANDLE hFile);
+BOOL read_except_table_mips32(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset,vector<PE_FILE_EXCEPTION_ENTRY_MIPS32>* except_table, HANDLE hFile);
+BOOL read_except_table_x64(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset, vector<PE_FILE_EXCEPTION_ENTRY_X64>* except_table, HANDLE hFile);
+BOOL read_except_table_other(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset, vector<PE_FILE_EXCEPTION_ENTRY_OTHER>* except_table, HANDLE hFile);
 
 BOOL getListResource(vector<PE_FILE_RESOURCE_TYPE>* res, LPCTSTR filename);
 BOOL CALLBACK ListResourceTypes(HMODULE hModule, LPTSTR lpszType, LONG_PTR lParam);
@@ -97,7 +121,9 @@ public:
 	unique_ptr<PE_FILE_IMPORT_TABLE> import_table;
 
 	vector<PE_FILE_RESOURCE_TYPE> resources;
-	
+	vector<PE_FILE_EXCEPTION_ENTRY_MIPS32> exception_table_mips32;
+	vector<PE_FILE_EXCEPTION_ENTRY_X64> exception_table_x64;
+	vector<PE_FILE_EXCEPTION_ENTRY_OTHER> exception_table_other;
 	
 	
 	void read(LPCTSTR pathfile);

@@ -39,6 +39,7 @@ BOOL read_char_cs_forcheck32bitPE(LONG e_lfanew, LPWORD CHAR_CS, HANDLE hFile) {
 			UnlockFile(hFile, offset, 0, sizeof(WORD), 0);
 			return result;
 		}
+		return FALSE;
 }
 
 BOOL read_dos_header(PIMAGE_DOS_HEADER dos, HANDLE hFile) {
@@ -388,6 +389,74 @@ BOOL getListResource(vector<PE_FILE_RESOURCE_TYPE>* res, LPCTSTR filename) {
 	return FALSE;
 }
 
+BOOL read_except_table_mips32(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset, vector<PE_FILE_EXCEPTION_ENTRY_MIPS32>* except_table, HANDLE hFile) {
+	if (!hFile) return FALSE;
+	DWORD offset;
+	DWORD tmpReadBytes;
+
+	if ((offset = rvaToOff(sections, RVAoffset, AlignmentSection)) == 0xFFFFFFFF) return FALSE;
+	DWORD start_offset = offset;
+	if (SetFilePointer(hFile, start_offset, NULL, FILE_BEGIN) == 0xFFFFFFFF) return FALSE;
+	UINT ix = 0;
+	while (1) {
+		except_table->push_back(PE_FILE_EXCEPTION_ENTRY_MIPS32());
+		LockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_MIPS32) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_MIPS32), 0);
+		if (!ReadFile(hFile, &(except_table->back()), sizeof(PE_FILE_EXCEPTION_ENTRY_MIPS32), &tmpReadBytes, NULL)) return FALSE;
+		UnlockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_MIPS32) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_MIPS32), 0);
+		if (except_table->back().BeginAddress == 0) {
+			except_table->pop_back(); break;
+		}
+		ix++;
+	}
+	return TRUE;
+}
+BOOL read_except_table_x64(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset, vector<PE_FILE_EXCEPTION_ENTRY_X64>* except_table, HANDLE hFile) {
+	if (!hFile) return FALSE;
+	DWORD offset;
+	DWORD tmpReadBytes;
+
+	if ((offset = rvaToOff(sections, RVAoffset, AlignmentSection)) == 0xFFFFFFFF) return FALSE;
+	DWORD start_offset = offset;
+	if (SetFilePointer(hFile, start_offset, NULL, FILE_BEGIN) == 0xFFFFFFFF) return FALSE;
+	UINT ix = 0;
+	while (1) {
+		except_table->push_back(PE_FILE_EXCEPTION_ENTRY_X64());
+		LockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_X64) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_X64), 0);
+		if (!ReadFile(hFile, &(except_table->back()), sizeof(PE_FILE_EXCEPTION_ENTRY_X64), &tmpReadBytes, NULL)) return FALSE;
+		UnlockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_X64) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_X64), 0);
+		if (except_table->back().BeginAddress == 0) {
+			except_table->pop_back(); break;
+		}
+		ix++;
+	}
+	return TRUE;
+}
+BOOL read_except_table_other(DWORD AlignmentSection, vector<IMAGE_SECTION_HEADER>* sections,DWORD RVAoffset, vector<PE_FILE_EXCEPTION_ENTRY_OTHER>* except_table, HANDLE hFile) {
+	if (!hFile) return FALSE;
+	DWORD offset;
+	DWORD tmpReadBytes;
+
+	if ((offset = rvaToOff(sections, RVAoffset, AlignmentSection)) == 0xFFFFFFFF) return FALSE;
+	DWORD start_offset = offset;
+	if (SetFilePointer(hFile, start_offset, NULL, FILE_BEGIN) == 0xFFFFFFFF) return FALSE;
+	UINT ix = 0;
+	while (1) {
+		except_table->push_back(PE_FILE_EXCEPTION_ENTRY_OTHER());
+		LockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_OTHER) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_OTHER), 0);
+		if (!ReadFile(hFile, &(except_table->back()), sizeof(PE_FILE_EXCEPTION_ENTRY_OTHER), &tmpReadBytes, NULL)) return FALSE;
+		UnlockFile(hFile, start_offset + sizeof(PE_FILE_EXCEPTION_ENTRY_OTHER) * ix, 0, sizeof(PE_FILE_EXCEPTION_ENTRY_OTHER), 0);
+		if (except_table->back().BeginAddress == 0) {
+			except_table->pop_back(); break;
+		}
+		ix++;
+	}
+	return TRUE;
+}
+
+
+
+
+
 PE_FILE::PE_FILE() {
 	_STATE = PE_FILE_NOT_INITIALIZED;
 	PE32 = FALSE;
@@ -456,7 +525,9 @@ void PE_FILE::read(LPCTSTR pathfile) {
 		auto expt_t = unique_ptr<PE_FILE_EXPORT_TABLE>(new PE_FILE_EXPORT_TABLE());
 		auto impt_t = unique_ptr<PE_FILE_IMPORT_TABLE>(new PE_FILE_IMPORT_TABLE());
 		auto res_s = vector<PE_FILE_RESOURCE_TYPE>();
-
+		auto except_t_mips32 = vector<PE_FILE_EXCEPTION_ENTRY_MIPS32>();
+		auto except_t_x64 = vector<PE_FILE_EXCEPTION_ENTRY_X64>();
+		auto except_t_other = vector<PE_FILE_EXCEPTION_ENTRY_OTHER>();
 
 
 
@@ -466,11 +537,29 @@ void PE_FILE::read(LPCTSTR pathfile) {
 			if(!read_export_table(op_h32->SectionAlignment, &sect_hs, op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress, &*expt_t, hFile)) 
 				RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
 
-
 			if(op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress)
 				//read import sector
 			if(!read_import_table(PE32_T, op_h32->SectionAlignment, &sect_hs, op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress, &*impt_t, hFile))
 				RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+                
+
+			if (op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress) {
+				//read exception table
+				if ((file_h->Machine == IMAGE_FILE_MACHINE_IA64) ||
+					(file_h->Machine == IMAGE_FILE_MACHINE_AMD64)) {
+					if (!read_except_table_x64(op_h32->SectionAlignment, &sect_hs, op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_x64, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+				else if (file_h->Machine == IMAGE_FILE_MACHINE_R3000) {
+					if (!read_except_table_mips32(op_h32->SectionAlignment, &sect_hs, op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_mips32, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+				else {
+					if (!read_except_table_other(op_h32->SectionAlignment, &sect_hs, op_h32->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_other, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+			}
+
 		}
 		else { //PE32+
 			if(op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress)
@@ -481,6 +570,22 @@ void PE_FILE::read(LPCTSTR pathfile) {
 			if(op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress)
 			if (!read_import_table(PE32_T, op_h64->SectionAlignment, &sect_hs, op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress, &*impt_t, hFile))
 				RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+
+			if (op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress) {
+				if ((file_h->Machine == IMAGE_FILE_MACHINE_IA64) ||
+					(file_h->Machine == IMAGE_FILE_MACHINE_AMD64)) {
+					if (!read_except_table_x64(op_h64->SectionAlignment, &sect_hs, op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_x64, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+				else if (file_h->Machine == IMAGE_FILE_MACHINE_R3000) {
+					if (!read_except_table_mips32(op_h64->SectionAlignment, &sect_hs, op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_mips32, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+				else {
+					if (!read_except_table_other(op_h64->SectionAlignment, &sect_hs, op_h64->DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION].VirtualAddress, &except_t_other, hFile))
+						RaiseException(PE_FILE_BAD_READ, 0, 0, NULL);
+				}
+			}
 		}
 
 		
@@ -507,6 +612,9 @@ void PE_FILE::read(LPCTSTR pathfile) {
 		export_table = static_cast<unique_ptr<PE_FILE_EXPORT_TABLE>&&>(expt_t);
 		import_table = static_cast<unique_ptr<PE_FILE_IMPORT_TABLE>&&>(impt_t);
 		resources = res_s;
+		exception_table_mips32 = except_t_mips32;
+		exception_table_x64 = except_t_x64;
+		exception_table_other = except_t_other;
 		_STATE = PE_FILE_NO_ERRORS;
 		PE32 = PE32_T;
 		//file = std::move( *this);

@@ -58,18 +58,6 @@
     <ClCompile Include="PE_FILE1S.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QtGuiPE_Except.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_QtGuiPE_Except.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QtGuiPE_Except.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QtGuiPE_Except.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_QtGuiPE_DataDirectory.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -169,6 +157,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QtGuiPE_Resource.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QtGuiPE_ExceptTable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QtGuiPE_ExceptTable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_QtGuiPE_ExceptTable.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QtGuiPE_ExceptTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="QtGuiPE.h">
@@ -179,15 +179,6 @@
     </CustomBuild>
     <CustomBuild Include="QtGuiPE.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QtGuiPE_Except.qrc">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QtGuiPE_Except.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QtGuiPE_Except.ui">
-      <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="QtGuiPE_DataDirectory.h">
       <Filter>Header Files</Filter>
@@ -261,6 +252,15 @@
     <CustomBuild Include="QtGuiPE_Resource.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="QtGuiPE_ExceptTable.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QtGuiPE_ExceptTable.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="QtGuiPE_ExceptTable.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_QtGuiPE.h">
@@ -271,9 +271,6 @@
     </ClInclude>
     <ClInclude Include="PE_FILE1.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_QtGuiPE_Except.h">
-      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_QtGuiPE_DataDirectory.h">
       <Filter>Generated Files</Filter>
@@ -303,6 +300,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_QtGuiPE_Resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_QtGuiPE_ExceptTable.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1615,6 +1615,9 @@
         <height>20</height>
        </rect>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
       <property name="currentSection">
        <enum>QDateTimeEdit::DaySection</enum>
       </property>

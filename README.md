@@ -1,13 +1,19 @@
-### GuiPEBuilder 0.6a , by 0xdead4ead Copyright 28.08.2017
+# GuiPEBuilder 0.6a , by 0xdead4ead Copyright 28.08.2017
 
-### MVS 2015 QT 5.8
+///MVS 2015 QT 5.8
+Utility for working with PE / PE + (64bit) files.
+###### In the future it is planned: 
+Editing titles, correction CRC, editing import / export tables, editing resource table, editing section table, restructuring of the image.
+##### Main features of the program:
+  - Support for new format PE + (64bit)
+  - View the DOS header
+  - View the COFF header
+  - View the Optional header
+  - View Sections table
+  - View resource table
+  - View import / export tables
 
- Changes:
- Dos header viewer;
- File header viewer;
- PE header viewer;
- Section viewer;
- Export directory viewer;
- Import directory viewer;
- Resource directory viewer;
+# GuiPEBuilder 0.6.1a  7.09.2017, New Features!
+
+  - View exception table
 

@@ -400,26 +400,26 @@ void QtGuiPE::open_file_slot() {
 }
 
 void QtGuiPE::data_directory_slot() {
-	data_directory.setWindowTitle(QString("QtGuiPE ") + QString("DATA DIRECTORY"));
+	data_directory.setWindowTitle(QString("GuiPEBuilder ") + QString("DATA DIRECTORY"));
 	data_directory.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 	data_directory.show();
 }
 
 void QtGuiPE::sections_slot() {
-	sections.setWindowTitle(QString("QtGuiPE ") + QString("SECTIONS"));
+	sections.setWindowTitle(QString("GuiPEBuilder ") + QString("SECTIONS"));
 	sections.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 	sections.show();
 }
 
 void QtGuiPE::characteristics_slot() {
-	characteristics_fh.setWindowTitle(QString("QtGuiPE ") + QString("Characteristics"));
+	characteristics_fh.setWindowTitle(QString("GuiPEBuilder ") + QString("Characteristics"));
 	characteristics_fh.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 	characteristics_fh.show();
 
 }
 
 void QtGuiPE::dllcharacteristics_slot() {
-	dllcharacteristics.setWindowTitle(QString("QtGuiPE ") + QString("DllCharacteristics"));
+	dllcharacteristics.setWindowTitle(QString("GuiPEBuilder ") + QString("DllCharacteristics"));
 	dllcharacteristics.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 	dllcharacteristics.show();
 }

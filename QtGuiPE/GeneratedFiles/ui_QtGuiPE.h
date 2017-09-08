@@ -569,6 +569,7 @@ public:
         TimeDateStamp_dateTimeEdit = new QDateTimeEdit(frame_3);
         TimeDateStamp_dateTimeEdit->setObjectName(QStringLiteral("TimeDateStamp_dateTimeEdit"));
         TimeDateStamp_dateTimeEdit->setGeometry(QRect(180, 80, 131, 20));
+        TimeDateStamp_dateTimeEdit->setReadOnly(true);
         TimeDateStamp_dateTimeEdit->setCurrentSection(QDateTimeEdit::DaySection);
         TimeDateStamp_dateTimeEdit->setCalendarPopup(false);
         TimeDateStamp_dateTimeEdit->setTimeSpec(Qt::LocalTime);

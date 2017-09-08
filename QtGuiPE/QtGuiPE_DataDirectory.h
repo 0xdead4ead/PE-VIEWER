@@ -6,6 +6,7 @@
 #include "QtGuiPE_ExportTable.h"
 #include "QtGuiPE_ImportTable.h"
 #include "QtGuiPE_Resource.h"
+#include "QtGuiPE_ExceptTable.h"
 
 class QtGuiPE_DataDirectory : public QWidget
 {
@@ -20,6 +21,7 @@ private:
 	QtGuiPE_ExportTable export_table;
 	QtGuiPE_ImportTable import_table;
 	QtGuiPE_Resource resource;
+	QtGuiPE_ExceptTable except_table;
 
 public Q_SLOTS:
 	void data_directory_tableActivated_slot(int row, int column);

@@ -31,8 +31,8 @@
                         + sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER) - sizeof(WORD))
 
 
-//#define RVA_TO_RAW(rva,file_align,sect_align) (((rva / sect_align) * file_align) + (rva % sect_align))  
 
 #define ALIGN_DOWN(x, align)  (x & ~(align-1))
 #define ALIGN_UP(x, align)    ((x & (align-1)) ? ALIGN_DOWN(x,align)+align : x)
+
 
