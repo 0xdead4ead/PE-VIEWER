@@ -2,8 +2,8 @@
 
 ///MVS 2015 QT 5.8
 Utility for working with PE / PE + (64bit) files.
-###### In the future it is planned: 
-Editing titles, correction CRC, editing import / export tables, editing resource table, editing section table, restructuring of the image.
+
+
 ##### Main features of the program:
   - Support for new format PE + (64bit)
   - View the DOS header
@@ -13,7 +13,11 @@ Editing titles, correction CRC, editing import / export tables, editing resource
   - View resource table
   - View import / export tables
 
-# GuiPEBuilder 0.6.1a  7.09.2017, New Features!
+# GuiPEBuilder 0.6.1a  7.09.2017:
 
   - View exception table
 
+# GuiPEBuilder 0.6.2a  18.01.2018:
+
+  - Add hex mode (Used https://github.com/virinext/QHexView)
+  - View Security table

@@ -3,6 +3,7 @@
 #include <qfiledialog.h>
 #include <qtextstream.h>
 #include <qdebug.h>
+
 void message_to_file(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
 	//???
 }
@@ -22,12 +23,11 @@ int main(int argc, char* argv[])
 		if (w.ReadPE(pathfile)) {
 			w.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
 			w.setWindowTitle("GuiPEBuilder " + pathfile);
-
+			
 			w.show();
 			return a.exec();
 		}
 	}
-
 	//__try {
 	//	w.ReadPE(pathfile);
 

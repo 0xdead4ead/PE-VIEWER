@@ -16,6 +16,8 @@ QtGuiPE::QtGuiPE(QWidget *parent)
 	QObject::connect(ui.SectionsPushButton, SIGNAL(clicked()), this, SLOT(sections_slot()));
 	QObject::connect(ui.CharacteristicsPushButton, SIGNAL(clicked()), this, SLOT(characteristics_slot()));
 	QObject::connect(ui.DLLCharacteristicsPushButton, SIGNAL(clicked()), this, SLOT(dllcharacteristics_slot()));
+	//data_directory.hex_mode = &hex_mode;
+	//sections.hex_mode = &hex_mode;
 	//QObject::connect(this, SIGNAL(closeClicked()), this, SLOT(quit()));
 	//QObject::connect(data_directory.ui.ImportTablePushButton, SIGNAL(clicked()), this, SLOT(import_view_slot()));
 	//QObject::connect(data_directory.ui.ExportTablePushButton, SIGNAL(clicked()), this, SLOT(export_view_slot()));
@@ -378,7 +380,7 @@ bool QtGuiPE::ReadPE(const QString& pathfile) {
 }
 
 void QtGuiPE::open_file_slot() {
-	QString pathfile = QFileDialog::getOpenFileName(this, tr("OPEN FILE"), "", tr("COFF FORMAT OBJECTS (*.exe *.dll *.ocx *.cpl)"));
+	QString pathfile = QFileDialog::getOpenFileName(nullptr, "OPEN FILE", "", "Executable COFF FORMAT OBJECTS (*.exe *.dll *.ocx *.cpl *.scr *.sys)");
 	if (!pathfile.isEmpty()) {
 		__try {
 			file.read(pathfile.toStdWString().c_str());

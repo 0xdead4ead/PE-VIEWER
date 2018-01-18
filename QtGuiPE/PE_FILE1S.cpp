@@ -617,6 +617,7 @@ void PE_FILE::read(LPCTSTR pathfile) {
 		exception_table_other = except_t_other;
 		_STATE = PE_FILE_NO_ERRORS;
 		PE32 = PE32_T;
+		this->pathfile = pathfile;
 		//file = std::move( *this);
 	}
 	else {

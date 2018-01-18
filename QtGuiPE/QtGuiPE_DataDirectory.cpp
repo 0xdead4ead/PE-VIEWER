@@ -1,12 +1,20 @@
 #include "QtGuiPE_DataDirectory.h"
 #include "qmessagebox.h"
 #include "PE_FILE1.h"
-
+#include "QtGuiPE_HexMode\QtGuiPE_HexMode.h"
+#include <qpaintengine.h>
 QtGuiPE_DataDirectory::QtGuiPE_DataDirectory(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
 	QObject::connect(ui.tableWidget, SIGNAL(cellActivated(int, int)), this, SLOT(data_directory_tableActivated_slot(int, int)));
+
+	//m_pmnu = new QMenu(this);
+	//m_pmnu->addAction("&View in hex mode");
+	//connect(m_pmnu,
+	//	SIGNAL(triggered(QAction*)),
+	//	SLOT(slotMenuActivated(QAction*))
+	//);
 }
 
 void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int column) {
@@ -163,8 +171,71 @@ void QtGuiPE_DataDirectory::data_directory_tableActivated_slot(int row, int colu
 		}
 		break; 
 	}
+	case IMAGE_DIRECTORY_ENTRY_SECURITY: {
+		if (file.PE32) {
+			if (file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress) {
+				QString pathfile = QString::fromWCharArray(file.pathfile.c_str());
+				QFile tfile(pathfile);
+
+
+				if (tfile.open(QIODevice::ReadOnly))
+				{
+					QByteArray arr = tfile.readAll();
+					hex_mode.setData(new QHexView::DataStorageArray(arr));
+					hex_mode.setWindowTitle(QString("GuiPEBuilder ") + QString("HEX MODE ") + pathfile);
+					hex_mode.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+					hex_mode.offset(rvaToOff(&file.section_headers, file.op_header32->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress, file.op_header32->SectionAlignment));
+					hex_mode.show();
+
+				}
+				else {
+					QMessageBox::critical(nullptr, "File opening problem", "Problem with open file `" + pathfile + "`for reading");
+				}
+			}
+			else {
+				QMessageBox MsgBox;
+				MsgBox.setText(QString::fromWCharArray(L"Security table not present"));
+				MsgBox.setIcon(QMessageBox::Warning);
+				MsgBox.setStandardButtons(QMessageBox::Ok);
+				MsgBox.exec();
+			}
+		}
+		else {
+			if (file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress) {
+				QString pathfile = QString::fromWCharArray(file.pathfile.c_str());
+				QFile tfile(pathfile);
+
+
+				if (tfile.open(QIODevice::ReadOnly))
+				{
+					QByteArray arr = tfile.readAll();
+					hex_mode.setData(new QHexView::DataStorageArray(arr));
+					hex_mode.setWindowTitle(QString("GuiPEBuilder ") + QString("HEX MODE ") + pathfile);
+					hex_mode.setWindowFlags(Qt::Widget | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::MSWindowsFixedSizeDialogHint);
+					hex_mode.offset(rvaToOff(&file.section_headers, file.op_header64->DataDirectory[IMAGE_DIRECTORY_ENTRY_SECURITY].VirtualAddress, file.op_header64->SectionAlignment));
+					hex_mode.show();
+					
+				}
+				else {
+					QMessageBox::critical(nullptr, "File opening problem", "Problem with open file `" + pathfile + "`for reading");
+				}
+			}
+			else {
+				QMessageBox MsgBox;
+				MsgBox.setText(QString::fromWCharArray(L"Security table not present"));
+				MsgBox.setIcon(QMessageBox::Warning);
+				MsgBox.setStandardButtons(QMessageBox::Ok);
+				MsgBox.exec();
+			}
+		}
+		break;
+	}
 	}
 }
+
+//void QtGuiPE_DataDirectory::slotMenuActivated(QAction* pAction) {
+	//pAction->menu()->
+//}
 
 
 void QtGuiPE_DataDirectory::fill_fields() {

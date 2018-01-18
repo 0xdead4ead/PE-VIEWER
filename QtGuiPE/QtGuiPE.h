@@ -9,6 +9,7 @@
 #include "QtGuiPE_Sections.h"
 #include "QtGuiPE_Characteristics.h"
 #include "QtGuiPE_DLLCharacteristics.h"
+//#include "QtGuiPE_HexMode\QtGuiPE_HexMode.h"
 
 class QtGuiPE : public QMainWindow
 {
@@ -20,14 +21,12 @@ public:
 	void fill_fields();
 	bool ReadPE(const QString& pathfile);
 private:
-
-
+	
 	QtGuiPE_DataDirectory data_directory;
 	QtGuiPE_Sections sections;
 	QtGuiPE_Characteristics characteristics_fh;
 	QtGuiPE_DLLCharacteristics dllcharacteristics;
-	
-	
+
 	Ui::QtGuiPEClass ui;
 	//PE_FILE* file;
 	

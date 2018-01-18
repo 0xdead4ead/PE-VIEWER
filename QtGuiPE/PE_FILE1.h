@@ -107,7 +107,7 @@ DWORD rvaToOff(vector<IMAGE_SECTION_HEADER>* sections, DWORD rva, DWORD Alignmen
 class PE_FILE {
 public:
 	DWORD _STATE;
-
+	wstring pathfile;
 
 	unique_ptr<IMAGE_DOS_HEADER> dos_header;
 	unique_ptr<DWORD> Signature; 
