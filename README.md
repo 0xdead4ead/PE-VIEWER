@@ -1,6 +1,6 @@
-# GuiPEBuilder 0.6a , by 0xdead4ead Copyright 28.08.2017
+# PE/PE +(64bit) Viewer (Qt 5.8) 0.6a , 28.08.2017
 
-///MVS 2015 QT 5.8
+///MSVC 2015 QT 5.8
 Utility for working with PE / PE + (64bit) files.
 
 
@@ -13,11 +13,11 @@ Utility for working with PE / PE + (64bit) files.
   - View resource table
   - View import / export tables
 
-# GuiPEBuilder 0.6.1a  7.09.2017:
+# 0.6.1a ,  7.09.2017:
 
   - View exception table
 
-# GuiPEBuilder 0.6.2a  18.01.2018:
+# 0.6.2a ,  18.01.2018:
 
   - Add hex mode (Used https://github.com/virinext/QHexView)
   - View Security table
